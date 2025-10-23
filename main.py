@@ -4,25 +4,25 @@ from dotenv import load_dotenv
 import requests
 
 
-def shorten_link(api_key, user_url):
+def shorten_link(vk_token, user_url):
 	api_url = "https://api.vk.ru/method/utils.getShortLink"
 	params = {
 		"url": user_url,
-		"access_token": api_key,
+		"access_token": vk_token,
 		"v": "5.199",
 	}
 	response = requests.get(api_url, params=params)
 	response.raise_for_status()
-	data = response.json()
+	vk_response = response.json()
 
-	if "error" in data:
-		error_msg = data["error"]["error_msg"]
+	if "error" in vk_response:
+		error_msg = vk_response["error"]["error_msg"]
 		raise requests.exceptions.HTTPError(error_msg)
 
-	return data["response"]["short_url"]
+	return vk_response["response"]["short_url"]
 
 
-def count_clicks(api_key, short_url):
+def count_clicks(vk_token, short_url):
 	api_url = "https://api.vk.ru/method/utils.getLinkStats"
 	key = urlparse(short_url).path.lstrip('/')
 	params = {
@@ -33,16 +33,16 @@ def count_clicks(api_key, short_url):
 	}
 	response = requests.get(api_url, params=params)
 	response.raise_for_status()
-	data = response.json()
+	vk_response = response.json()
 
-	if "error" in data:
-		error_msg = data["error"]["error_msg"]
+	if "error" in vk_response:
+		error_msg = vk_response["error"]["error_msg"]
 		raise requests.exceptions.HTTPError(error_msg)
 
-	return  data["response"]["stats"][0]["views"]
+	return  vk_response["response"]["stats"][0]["views"]
 
 
-def is_shorten_link(api_key, url):
+def is_shorten_link(vk_token, url):
 	api_url = "https://api.vk.ru/method/utils.getLinkStats"
 	key = urlparse(url).path.lstrip('/')
 	params = {
@@ -52,15 +52,15 @@ def is_shorten_link(api_key, url):
 	}
 
 	response = requests.get(api_url, params=params)
-	data = response.json()
+	vk_response = response.json()
 
-	return "response" in data
+	return "response" in vk_response
 
 
 def main():
 	load_dotenv()
 	user_url = input('Введите ссылку ')
-	api_key = os.getenv('API_KEY')
+	vk_token = os.environ('VK_TOKEN')
 
 
 	try:
@@ -77,4 +77,3 @@ def main():
 
 if __name__ == '__main__':
 	main()
-	
