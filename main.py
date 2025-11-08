@@ -27,7 +27,7 @@ def count_clicks(vk_token, short_url):
 	key = urlparse(short_url).path.lstrip('/')
 	params = {
 		"key":key,
-		"access_token": api_key,
+		"access_token": vk_token,
 		"interval": "forever",
 		"v": "5.199",
 	}
@@ -47,7 +47,7 @@ def is_shorten_link(vk_token, url):
 	key = urlparse(url).path.lstrip('/')
 	params = {
 		"key": key,
-		"access_token": api_key,
+		"access_token": vk_token,
 		"v": "5.199",
 	}
 
@@ -59,16 +59,15 @@ def is_shorten_link(vk_token, url):
 
 def main():
 	load_dotenv()
-	user_url = input('Введите ссылку ')
-	vk_token = os.environ('VK_TOKEN')
-
+	user_url = input('Введите ссылку: ')
+	vk_token = os.environ['VK_TOKEN']
 
 	try:
-		if is_shorten_link(api_key, user_url):
-			clicks = count_clicks(api_key, user_url)
+		if is_shorten_link(vk_token, user_url):
+			clicks = count_clicks(vk_token, user_url)
 			print("Количество переходов:", clicks)
 		else:
-			short_link = shorten_link(api_key, user_url)
+			short_link = shorten_link(vk_token, user_url)
 			print('Сокращенная ссылка:', short_link)
 
 	except requests.exceptions.HTTPError as error:
