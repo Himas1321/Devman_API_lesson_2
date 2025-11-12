@@ -1,1 +1,6 @@
 .env
+__pycache__
+.replit
+.vscode
+.DS_Store
+.idea
